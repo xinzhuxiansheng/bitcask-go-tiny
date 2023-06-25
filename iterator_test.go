@@ -43,7 +43,7 @@ func TestDB_NewIterator_One_Value(t *testing.T) {
 	assert.Equal(t, utils.GetTestKey(10), val)
 }
 
-func TestDB_NewIterator_Multi_Value(t *testing.T) {
+func TestDB_Iterator_Multi_Values(t *testing.T) {
 	opts := DefaultOptions
 	dir, _ := os.MkdirTemp("", "bitcask-go-iterator-3")
 	opts.DirPath = dir
@@ -68,29 +68,31 @@ func TestDB_NewIterator_Multi_Value(t *testing.T) {
 	for iter1.Rewind(); iter1.Valid(); iter1.Next() {
 		assert.NotNil(t, iter1.Key())
 	}
-
 	iter1.Rewind()
 	for iter1.Seek([]byte("c")); iter1.Valid(); iter1.Next() {
 		assert.NotNil(t, iter1.Key())
 	}
+	iter1.Close()
 
-	//反向迭代
+	// 反向迭代
 	iterOpts1 := DefaultIteratorOptions
 	iterOpts1.Reverse = true
 	iter2 := db.NewIterator(iterOpts1)
 	for iter2.Rewind(); iter2.Valid(); iter2.Next() {
-		assert.NotNil(t, iter1.Key())
+		assert.NotNil(t, iter2.Key())
 	}
 	iter2.Rewind()
 	for iter2.Seek([]byte("c")); iter2.Valid(); iter2.Next() {
 		assert.NotNil(t, iter2.Key())
 	}
+	iter2.Close()
 
 	// 指定了 prefix
 	iterOpts2 := DefaultIteratorOptions
-	iterOpts2.Prefix = []byte("a")
+	iterOpts2.Prefix = []byte("aee")
 	iter3 := db.NewIterator(iterOpts2)
 	for iter3.Rewind(); iter3.Valid(); iter3.Next() {
 		assert.NotNil(t, iter3.Key())
 	}
+	iter3.Close()
 }
