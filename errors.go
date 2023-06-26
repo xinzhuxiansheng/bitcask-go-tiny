@@ -8,4 +8,6 @@ var (
 	ErrKeyNotFound            = errors.New("key not found in database")
 	ErrDataFileNotFound       = errors.New("data file is not found")
 	ErrDataDircetoryCorrupted = errors.New("the database directory maybe corrupted")
+	ErrMergeIsProgress        = errors.New("merge is in progress, try again later")
+	ErrExceedMaxBatchNum      = errors.New("exceed the max batch num")
 )

@@ -10,6 +10,7 @@ type LogRecordType = byte
 const (
 	LogRecordNormal LogRecordType = iota
 	LogRecordDeleted
+	LogRecordTxnFinished
 )
 
 // crc  type keySize valueSize
@@ -29,6 +30,12 @@ type logRecordHeader struct {
 	recordType LogRecordType // 标识 LogRecord 的类型
 	keySize    uint32        // key 的长度
 	valueSize  uint32        // value 的长度
+}
+
+// TransactionRecord 暂存的事务相关的数据
+type TransactionRecord struct {
+	Record *LogRecord
+	Pos    *LogRecordPos
 }
 
 /*
@@ -72,6 +79,24 @@ func EncodeLogRecord(logRecord *LogRecord) ([]byte, int64) {
 	// fmt.Printf("header length : %d, crc: %d\n", index, crc)
 
 	return encBytes, int64(size)
+}
+
+// 对位置信息进行编码
+func EncodeLogRecordPos(pos *LogRecordPos) []byte {
+	buf := make([]byte, binary.MaxVarintLen32+binary.MaxVarintLen64)
+	var index = 0
+	index += binary.PutVarint(buf[index:], int64(pos.Fid))
+	index += binary.PutVarint(buf[index:], pos.Offset)
+	return buf[:index]
+}
+
+// DecodeLogRecordPos 解码 LogRecordPos
+func DecodeLogRecordPos(buf []byte) *LogRecordPos {
+	var index = 0
+	fileId, n := binary.Varint(buf[index:])
+	index += n
+	offset, _ := binary.Varint(buf[index:])
+	return &LogRecordPos{Fid: uint32(fileId), Offset: offset}
 }
 
 // 对字节数组中的 Header 信息进行编码
