@@ -5,7 +5,8 @@
 
 ### 项目结构    
 1.BTree构建索引Key和LogRecordPos （https://github.com/google/btree）
-
+2.自适应基数树 https://github.com/plar/go-adaptive-radix-tree
+3.B+树 https://github.com/etcd-io/bbolt
 
 ### 跑多个单元测试
 例如，测试 fio/file_io_test.go中的所有方法 
