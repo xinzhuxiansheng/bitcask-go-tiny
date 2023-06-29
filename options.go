@@ -9,7 +9,12 @@ type Options struct {
 
 	SyncWrites bool // 每次写数据是否持久化
 
+	BytesPerSync uint // 累计写到多少字节后进行持久化
+
 	IndexType IndexerType // 索引类型
+
+	// 启动时是否使用 MMap 加载数据
+	MMapAtStartup bool
 }
 
 // WriteBatchOptions 批量写配置项
@@ -42,10 +47,12 @@ const (
 )
 
 var DefaultOptions = Options{
-	DirPath:      os.TempDir(),
-	DataFileSize: 256 * 1024 * 1024,
-	SyncWrites:   false,
-	IndexType:    BTree,
+	DirPath:       os.TempDir(),
+	DataFileSize:  256 * 1024 * 1024,
+	SyncWrites:    false,
+	BytesPerSync:  0,
+	IndexType:     BTree,
+	MMapAtStartup: true,
 }
 
 var DefaultIteratorOptions = IteratorOptions{
