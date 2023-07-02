@@ -4,7 +4,9 @@ import (
 	_ "golang.org/x/sys/windows"
 	"io/fs"
 	"math"
+	"os"
 	"path/filepath"
+	"strings"
 	_ "unsafe"
 )
 
@@ -52,4 +54,41 @@ func AvailableDiskSize() (uint64, error) {
 	//fmt.Printf("Total number of free bytes: %d\n", totalNumberOfFreeBytes)
 
 	return math.MaxInt64, nil
+}
+
+// CopyDir 拷贝数据目录
+func CopyDir(src, dest string, exclude []string) error {
+	// 目标文件不存在则创建
+	if _, err := os.Stat(dest); os.IsNotExist(err) {
+		if err := os.MkdirAll(dest, os.ModePerm); err != nil {
+			return err
+		}
+	}
+
+	return filepath.Walk(src, func(path string, info fs.FileInfo, err error) error {
+		fileName := strings.Replace(path, src, "", 1)
+		if fileName == "" {
+			return nil
+		}
+
+		for _, e := range exclude {
+			matched, err := filepath.Match(e, info.Name())
+			if err != nil {
+				return err
+			}
+			if matched {
+				return nil
+			}
+		}
+
+		if info.IsDir() {
+			return os.MkdirAll(filepath.Join(dest, fileName), info.Mode())
+		}
+
+		data, err := os.ReadFile(filepath.Join(src, fileName))
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(filepath.Join(dest, fileName), data, info.Mode())
+	})
 }
