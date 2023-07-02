@@ -19,6 +19,11 @@
 go test -v ./
 ```
 
+### benchmark测试
+```shell
+go test -bench=.  
+```
+
 
 ### refer
 1.https://github.com/roseduan       

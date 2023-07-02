@@ -17,7 +17,7 @@ func init() {
 	options := bitcask.DefaultOptions
 	dir, _ := os.MkdirTemp("E:\\Code\\Go\\bitcask-go-tiny\\doc", "bitcask-go-http")
 	options.DirPath = dir
-	db, err := bitcask.Open(options)
+	db, err = bitcask.Open(options)
 	if err != nil {
 		panic(fmt.Sprintf("failed to open db: %v", err))
 	}
