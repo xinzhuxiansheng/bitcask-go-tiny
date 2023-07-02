@@ -112,3 +112,16 @@ func TestDB_NewWriteBatch3(t *testing.T) {
 	//assert.Nil(t, err)
 
 }
+
+func TestDB_Start(t *testing.T) {
+	opts := DefaultOptions
+	dir, _ := os.MkdirTemp("E:\\Code\\Go\\bitcask-go-tiny\\doc", "bitcask-go-batch-3")
+	t.Log(dir)
+	opts.DirPath = dir
+	db, err := Open(opts)
+	//defer destroyDB(db)
+	assert.Nil(t, err)
+	assert.NotNil(t, db)
+
+	//
+}

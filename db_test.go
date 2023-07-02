@@ -326,6 +326,22 @@ func TestDB_FileLock(t *testing.T) {
 	err = db2.Close()
 	assert.Nil(t, err)
 
+	for i := 100; i < 10000; i++ {
+		err := db.Put(utils.GetTestKey(i), utils.RandomValue(128))
+		assert.Nil(t, err)
+	}
+
+	for i := 100; i < 10000; i++ {
+		err := db.Delete(utils.GetTestKey(i))
+		assert.Nil(t, err)
+	}
+	for i := 2000; i < 1000000; i++ {
+		err := db.Put(utils.GetTestKey(i), utils.RandomValue(128))
+		assert.Nil(t, err)
+	}
+
+	stat := db.Stat()
+	t.Log(stat)
 }
 
 //func TestDB_OpenMMap(t *testing.T){
